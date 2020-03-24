@@ -1,13 +1,13 @@
 {
   "name": "@fingerprintsoft/angular-spring-hal",
-  "version": "9.0.0",
+  "version": "9.0.1",
   "description": "This Angular module offers a HAL/JSON http-client to easily interact with a Spring Data Rest API or any API that implements the Spring Data Rest resource model",
   "author": "Masvis S.r.l.",
   "readme": "README.md",
   "license": "MIT",
-  "main": "./dist/index.js",
-  "module": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "index.js",
+  "module": "index.js",
+  "typings": "index.d.ts",
   "scripts": {
     "clean": "node ./scripts/deleteDist",
     "build": "npm run tsc",
@@ -23,7 +23,9 @@
     "Angular 4",
     "Angular 5",
     "Angular 6",
-    "Angular"
+    "Angular 7",
+    "Angular 8",
+    "Angular 9"
   ],
   "issues": {
     "url": "https://github.com/fingerprints/angular-spring-hal/issues"
@@ -33,6 +35,7 @@
     "url": "https://github.com/fingerprints/angular-spring-hal/.git"
   },
   "devDependencies": {
+    "@angular/cli": "~9.0.7",
     "@angular/compiler": "~9.0.7",
     "@angular/compiler-cli": "~9.0.7",
     "@angular/platform-server": "~9.0.7",
@@ -42,30 +45,30 @@
     "coveralls": "2.13.1",
     "fetch-mock": "5.11.0",
     "growl": "1.10.5",
-    "hoek": "4.2.1",
+    "@hapi/hoek": "~6.2.0",
     "jest": "20.0.4",
     "mocha": "^5.2.0",
-    "nconf": "^0.8.4",
+    "nconf": "^0.10.0",
     "optimist": "^0.6.1",
-    "rimraf": "^2.6.2",
-    "ts-node": "^3.3.0",
-    "tslint": "^5.10.0",
+    "rimraf": "^2.6.3",
+    "ts-node": "^8.0.2",
+    "tslint": "^5.12.1",
     "tslint-ionic-rules": "*",
     "typescript": "~3.7.5"
   },
   "dependencies": {
-    "query-string": "6.1.0",
-    "url": "0.11.0",
-    "util": "0.11.0",
     "@angular/animations": "~9.0.7",
-    "@angular/cli": "9.0.7",
     "@angular/common": "~9.0.7",
     "@angular/core": "~9.0.7",
     "@angular/platform-browser": "~9.0.7",
     "@angular/platform-browser-dynamic": "~9.0.7",
+    "@hapi/cryptiles": "^5.0.0",
+    "hash.js": "1.1.7",
+    "query-string": "6.2.0",
     "rxjs": "~6.5.4",
-    "zone.js": "~0.10.2",
-    "tslib": "1.10.0"
+    "url": "0.11.0",
+    "util": "0.11.1",
+    "zone.js": "~0.10.2"
   },
   "engines": {
     "node": ">=4"
