@@ -1,6 +1,6 @@
 {
   "name": "@fingerprintsoft/angular-spring-hal",
-  "version": "8.0.0",
+  "version": "9.0.0",
   "description": "This Angular module offers a HAL/JSON http-client to easily interact with a Spring Data Rest API or any API that implements the Spring Data Rest resource model",
   "author": "Masvis S.r.l.",
   "readme": "README.md",
@@ -33,11 +33,11 @@
     "url": "https://github.com/fingerprints/angular-spring-hal/.git"
   },
   "devDependencies": {
-    "@angular/compiler": "~8.2.14",
-    "@angular/compiler-cli": "~8.2.14",
-    "@angular/platform-server": "~8.2.14",
+    "@angular/compiler": "~9.0.7",
+    "@angular/compiler-cli": "~9.0.7",
+    "@angular/platform-server": "~9.0.7",
     "@types/mocha": "^2.2.43",
-    "@types/node": "10.12.9",
+    "@types/node": "^13.9.3",
     "chai": "^4.1.2",
     "coveralls": "2.13.1",
     "fetch-mock": "5.11.0",
@@ -51,20 +51,21 @@
     "ts-node": "^3.3.0",
     "tslint": "^5.10.0",
     "tslint-ionic-rules": "*",
-    "typescript": "~3.5.3"
+    "typescript": "~3.7.5"
   },
   "dependencies": {
     "query-string": "6.1.0",
     "url": "0.11.0",
     "util": "0.11.0",
-    "@angular/animations": "~8.2.14",
-    "@angular/cli": "8.3.25",
-    "@angular/common": "~8.2.14",
-    "@angular/core": "~8.2.14",
-    "@angular/platform-browser": "~8.2.14",
-    "@angular/platform-browser-dynamic": "~8.2.14",
-    "rxjs": "~6.3.3",
-    "zone.js": "~0.8.26"
+    "@angular/animations": "~9.0.7",
+    "@angular/cli": "9.0.7",
+    "@angular/common": "~9.0.7",
+    "@angular/core": "~9.0.7",
+    "@angular/platform-browser": "~9.0.7",
+    "@angular/platform-browser-dynamic": "~9.0.7",
+    "rxjs": "~6.5.4",
+    "zone.js": "~0.10.2",
+    "tslib": "1.10.0"
   },
   "engines": {
     "node": ">=4"
