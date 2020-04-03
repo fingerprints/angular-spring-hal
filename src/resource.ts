@@ -1,18 +1,17 @@
-import {of as observableOf, throwError as observableThrowError} from 'rxjs';
+import { Observable, of as observableOf, throwError as observableThrowError } from 'rxjs';
 
-import {map} from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 
-import {HttpParams} from '@angular/common/http';
-import {ResourceHelper} from './resource-helper';
-import {ResourceArray} from './resource-array';
-import {isNullOrUndefined} from 'util';
+import { HttpParams } from '@angular/common/http';
+import { ResourceHelper } from './resource-helper';
+import { ResourceArray } from './resource-array';
 
-import {HalOptions} from './rest.service';
-import {SubTypeBuilder} from './subtype-builder';
-import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs/internal/Observable';
-import {CustomEncoder} from "./CustomEncoder";
+import { HalOptions } from './rest.service';
+import { SubTypeBuilder } from './subtype-builder';
+import { Injectable } from '@angular/core';
+import { CustomEncoder } from "./CustomEncoder";
+import { isNullOrUndefined } from 'util';
 
 @Injectable()
 export abstract class Resource {

@@ -1,14 +1,13 @@
-import {of as observableOf, throwError as observableThrowError} from 'rxjs';
-import {map, mergeMap} from 'rxjs/operators';
-import {Resource} from './resource';
-import {ResourceArray} from './resource-array';
-import {Sort} from './sort';
-import {ResourceService} from './resource.service';
-import {SubTypeBuilder} from './subtype-builder';
-import {isNullOrUndefined} from 'util';
-import {Observable} from 'rxjs/internal/Observable';
-import {Injector} from "@angular/core";
-import {HttpResponse} from '@angular/common/http';
+import { of as observableOf, throwError as observableThrowError } from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
+import { Resource } from './resource';
+import { ResourceArray } from './resource-array';
+import { Sort } from './sort';
+import { ResourceService } from './resource.service';
+import { SubTypeBuilder } from './subtype-builder';
+import { Observable } from 'rxjs/internal/Observable';
+import { Injector } from "@angular/core";
+import { isNullOrUndefined } from 'util';
 
 export type HalParam = { key: string, value: string | number | boolean };
 export type HalOptions = { notPaged?: boolean, size?: number, sort?: Sort[], params?: HalParam[] };
@@ -28,7 +27,7 @@ export class RestService<T extends Resource> {
         this.type = type;
         this.resource = resource;
         this.resourceService = injector.get(ResourceService);
-        if (!isNullOrUndefined(_embedded))
+        if (isNullOrUndefined(_embedded))
             this._embedded = _embedded;
     }
 

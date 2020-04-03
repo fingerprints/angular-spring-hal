@@ -1,18 +1,16 @@
+import { Observable, throwError as observableThrowError } from 'rxjs';
 
-import {throwError as observableThrowError} from 'rxjs';
-
-import {catchError, map} from 'rxjs/operators';
-import {Resource} from './resource';
-import {ResourceHelper} from './resource-helper';
-import {Injectable} from '@angular/core';
-import {HttpParams, HttpResponse} from '@angular/common/http';
-import {Sort} from './sort';
-import {ResourceArray} from './resource-array';
-import {ExternalService} from './external.service';
-import {HalOptions, HalParam} from './rest.service';
-import {SubTypeBuilder} from './subtype-builder';
-import {Observable} from 'rxjs/internal/Observable';
-import {CustomEncoder} from "./CustomEncoder";
+import { catchError, map } from 'rxjs/operators';
+import { Resource } from './resource';
+import { ResourceHelper } from './resource-helper';
+import { Injectable } from '@angular/core';
+import { HttpParams, HttpResponse } from '@angular/common/http';
+import { Sort } from './sort';
+import { ResourceArray } from './resource-array';
+import { ExternalService } from './external.service';
+import { HalOptions, HalParam } from './rest.service';
+import { SubTypeBuilder } from './subtype-builder';
+import { CustomEncoder } from "./CustomEncoder";
 
 @Injectable()
 export class ResourceService {

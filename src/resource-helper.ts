@@ -1,10 +1,10 @@
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {Resource} from './resource';
-import {ResourceArray} from './resource-array';
-import {HalOptions, HalParam} from './rest.service';
-import {SubTypeBuilder} from './subtype-builder';
-import {isNullOrUndefined, isPrimitive} from 'util';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Resource } from './resource';
+import { ResourceArray } from './resource-array';
+import { HalOptions, HalParam } from './rest.service';
+import { SubTypeBuilder } from './subtype-builder';
 import * as url from 'url';
+import { isNullOrUndefined, isPrimitive } from 'util';
 
 export class ResourceHelper {
 
