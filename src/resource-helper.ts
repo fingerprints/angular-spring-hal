@@ -1,10 +1,12 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from '@angular/common/http';
 import { Resource } from './resource';
 import { ResourceArray } from './resource-array';
 import { HalOptions, HalParam } from './rest.service';
 import { SubTypeBuilder } from './subtype-builder';
 import * as url from 'url';
-import { isNullOrUndefined, isPrimitive } from 'util';
+import {Utils} from './Utils';
+
+export type ResourceExpire<T extends Resource> = { entity: any, expire: number };
 
 export class ResourceHelper {
 
@@ -16,7 +18,7 @@ export class ResourceHelper {
     private static http: HttpClient;
 
     public static get headers(): HttpHeaders {
-        if (isNullOrUndefined(this._headers))
+        if (Utils.isNullOrUndefined(this._headers))
             this._headers = new HttpHeaders();
         return this._headers;
     }
@@ -60,9 +62,9 @@ export class ResourceHelper {
     static resolveRelations(resource: Resource): Object {
         const result: any = {};
         for (const key in resource) {
-            if (!isNullOrUndefined(resource[key])) {
+            if (!Utils.isNullOrUndefined(resource[key])) {
                 if (ResourceHelper.className(resource[key])
-                    .find((className: string) => className == 'Resource')) {
+                    .find((className: string) => className == 'Resource') || resource[key]['_links']) {
                     if (resource[key]['_links'])
                         result[key] = resource[key]['_links']['self']['href'];
                 } else if (Array.isArray(resource[key])) {
@@ -70,10 +72,9 @@ export class ResourceHelper {
                     if (array) {
                         result[key] = new Array();
                         array.forEach((element) => {
-                            if (isPrimitive(element)) {
+                            if (Utils.isPrimitive(element)) {
                                 result[key].push(element);
-                            }
-                            else {
+                            } else {
                                 result[key].push(this.resolveRelations(element));
                             }
                         });
@@ -111,30 +112,46 @@ export class ResourceHelper {
         return classNames;
     }
 
-    static instantiateResourceCollection<T extends Resource>(type: { new(): T }, payload: any,
-                                                             result: ResourceArray<T>, builder?: SubTypeBuilder): ResourceArray<T> {
-        for (const embeddedClassName of Object.keys(payload[result._embedded])) {
-            let embedded: any = payload[result._embedded];
-            const items = embedded[embeddedClassName];
-            for (let item of items) {
-                let instance: T = new type();
-                instance = this.searchSubtypes(builder, embeddedClassName, instance);
-
-                this.instantiateResource(instance, item);
-                result.push(instance);
-            }
+    static instantiateResourceFromResponse<T extends Resource>(entity: T, response: HttpResponse<any>): T {
+        if (response.status >= 200 && response.status <= 207) {
+            return ResourceHelper.instantiateResource(entity, response.body);
+        } else if (response.status == 404) {
+            return null;
         }
+    }
 
-        result.totalElements = payload.page ? payload.page.totalElements : result.length;
-        result.totalPages = payload.page ? payload.page.totalPages : 1;
-        result.pageNumber = payload.page ? payload.page.number : 1;
-        result.pageSize = payload.page ? payload.page.size : 20;
+    static instantiateResourceCollection<T extends Resource>(type: { new(): T }, response: HttpResponse<any>,
+                                                             result: ResourceArray<T>, builder?: SubTypeBuilder): ResourceArray<T> {
 
-        result.self_uri = payload._links && payload._links.self ? payload._links.self.href : undefined;
-        result.next_uri = payload._links && payload._links.next ? payload._links.next.href : undefined;
-        result.prev_uri = payload._links && payload._links.prev ? payload._links.prev.href : undefined;
-        result.first_uri = payload._links && payload._links.first ? payload._links.first.href : undefined;
-        result.last_uri = payload._links && payload._links.last ? payload._links.last.href : undefined;
+        if (response.status >= 200 && response.status <= 207) {
+            let payload = response.body;
+            if (payload[result._embedded]) {
+                for (const embeddedClassName of Object.keys(payload[result._embedded])) {
+                    let embedded: any = payload[result._embedded];
+                    const items = embedded[embeddedClassName];
+                    for (let item of items) {
+                        let instance: T = new type();
+                        instance = this.searchSubtypes(builder, embeddedClassName, instance);
+
+                        this.instantiateResource(instance, item);
+                        result.push(instance);
+                    }
+                }
+            }
+
+            result.totalElements = payload.page ? payload.page.totalElements : result.length;
+            result.totalPages = payload.page ? payload.page.totalPages : 1;
+            result.pageNumber = payload.page ? payload.page.number : 1;
+            result.pageSize = payload.page ? payload.page.size : 20;
+
+            result.self_uri = payload._links && payload._links.self ? payload._links.self.href : undefined;
+            result.next_uri = payload._links && payload._links.next ? payload._links.next.href : undefined;
+            result.prev_uri = payload._links && payload._links.prev ? payload._links.prev.href : undefined;
+            result.first_uri = payload._links && payload._links.first ? payload._links.first.href : undefined;
+            result.last_uri = payload._links && payload._links.last ? payload._links.last.href : undefined;
+        } else if (response.status == 404) {
+            result.result = [];
+        }
         return result;
     }
 
@@ -153,7 +170,7 @@ export class ResourceHelper {
 
     static instantiateResource<T extends Resource>(entity: T, payload: Object): T {
         for (const p in payload) {
-            //TODO array init
+            //TODO array initClearCacheProcess
             /* if(entity[p].constructor === Array && isNullOrUndefined(payload[p]))
                  entity[p] = [];
              else*/
@@ -178,12 +195,13 @@ export class ResourceHelper {
 
     private static addSlash(uri: string): string {
         let uriParsed = url.parse(uri);
-        if (isNullOrUndefined(uriParsed.search) && uri && uri[uri.length - 1] != '/')
+        if (Utils.isNullOrUndefined(uriParsed.search) && uri && uri[uri.length - 1] != '/')
             return uri + '/';
         return uri;
     }
 
     public static getProxy(url: string): string {
+        url = url.replace('{?projection}', '');
         if (!ResourceHelper.proxy_uri || ResourceHelper.proxy_uri == '')
             return url;
         return ResourceHelper.addSlash(

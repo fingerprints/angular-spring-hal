@@ -6,8 +6,8 @@ import { Sort } from './sort';
 import { ResourceService } from './resource.service';
 import { SubTypeBuilder } from './subtype-builder';
 import { Observable } from 'rxjs/internal/Observable';
-import { Injector } from "@angular/core";
-import { isNullOrUndefined } from 'util';
+import { Injector } from '@angular/core';
+import { Utils } from './Utils';
 
 export type HalParam = { key: string, value: string | number | boolean };
 export type HalOptions = { notPaged?: boolean, size?: number, sort?: Sort[], params?: HalParam[] };
@@ -27,22 +27,22 @@ export class RestService<T extends Resource> {
         this.type = type;
         this.resource = resource;
         this.resourceService = injector.get(ResourceService);
-        if (isNullOrUndefined(_embedded))
+        if (!Utils.isNullOrUndefined(_embedded))
             this._embedded = _embedded;
     }
 
-    protected handleError(error: any):Observable<never> {
+    protected handleError(error: any): Observable<never> {
         return RestService.handleError(error);
     }
 
-    protected static handleError(error: any):Observable<never> {
+    protected static handleError(error: any): Observable<never> {
         return observableThrowError(error);
     }
 
     public getAll(options?: HalOptions, subType?: SubTypeBuilder): Observable<T[]> {
         return this.resourceService.getAll(this.type, this.resource, this._embedded, options, subType).pipe(
             mergeMap((resourceArray: ResourceArray<T>) => {
-                if (options && options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
+                if (options && options.notPaged && !Utils.isNullOrUndefined(resourceArray.first_uri)) {
                     options.notPaged = false;
                     options.size = resourceArray.totalElements;
                     return this.getAll(options);
@@ -53,8 +53,8 @@ export class RestService<T extends Resource> {
             }));
     }
 
-    public get(id: any, params?: HalParam[]): Observable<T> {
-        return this.resourceService.get(this.type, this.resource, id, params);
+    public get(id: any, params?: HalParam[], builder?: SubTypeBuilder): Observable<T> {
+        return this.resourceService.get(this.type, this.resource, id, params, builder);
     }
 
     public selfURI(id: any): string {
@@ -68,7 +68,7 @@ export class RestService<T extends Resource> {
     public search(query: string, options?: HalOptions, subType?: SubTypeBuilder): Observable<T[]> {
         return this.resourceService.search(this.type, query, this.resource, this._embedded, options, subType).pipe(
             mergeMap((resourceArray: ResourceArray<T>) => {
-                if (options && options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
+                if (options && options.notPaged && !Utils.isNullOrUndefined(resourceArray.first_uri)) {
                     options.notPaged = false;
                     options.size = resourceArray.totalElements;
                     return this.search(query, options, subType);
@@ -87,13 +87,13 @@ export class RestService<T extends Resource> {
         return this.resourceService.searchSingle(this.type, query, this.resource, options);
     }
 
-    public customQuery(query: string, options?: HalOptions): Observable<T[]> {
-        return this.resourceService.customQuery(this.type, query, this.resource, this._embedded, options).pipe(
+    public customQuery(query: string, options?: HalOptions, subType?: SubTypeBuilder): Observable<T[]> {
+        return this.resourceService.customQuery(this.type, query, this.resource, this._embedded, options, subType).pipe(
             mergeMap((resourceArray: ResourceArray<T>) => {
-                if (options && options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
+                if (options && options.notPaged && !Utils.isNullOrUndefined(resourceArray.first_uri)) {
                     options.notPaged = false;
                     options.size = resourceArray.totalElements;
-                    return this.customQuery(query, options);
+                    return this.customQuery(query, options, subType);
                 } else {
                     this.resourceArray = resourceArray;
                     return observableOf(resourceArray.result);
@@ -101,13 +101,13 @@ export class RestService<T extends Resource> {
             }));
     }
 
-    public customQueryPost(query: string, options?: HalOptions, body?: any): Observable<T[]> {
-        return this.resourceService.customQueryPost(this.type, query, this.resource, this._embedded, options, body).pipe(
+    public customQueryPost(query: string, options?: HalOptions, body?: any, subType?: SubTypeBuilder): Observable<T[]> {
+        return this.resourceService.customQueryPost(this.type, query, this.resource, this._embedded, options, body, subType).pipe(
             mergeMap((resourceArray: ResourceArray<T>) => {
-                if (options && options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
+                if (options && options.notPaged && !Utils.isNullOrUndefined(resourceArray.first_uri)) {
                     options.notPaged = false;
                     options.size = resourceArray.totalElements;
-                    return this.customQueryPost(query, options, body);
+                    return this.customQueryPost(query, options, body, subType);
                 } else {
                     this.resourceArray = resourceArray;
                     return observableOf(resourceArray.result);
@@ -127,8 +127,8 @@ export class RestService<T extends Resource> {
         return this.resourceService.getByRelation(this.type, relation);
     }
 
-    public count(): Observable<number> {
-        return this.resourceService.count(this.resource);
+    public count(query?: string, options?: HalOptions): Observable<number> {
+        return this.resourceService.count(this.resource, query, options);
     }
 
     public create(entity: T) {
@@ -151,6 +151,12 @@ export class RestService<T extends Resource> {
         if (this.resourceArray && this.resourceArray.totalElements)
             return this.resourceArray.totalElements;
         return 0;
+    }
+
+    public totalPages(): number {
+        if (this.resourceArray && this.resourceArray.totalPages)
+            return this.resourceArray.totalPages;
+        return 1;
     }
 
     public hasFirst(): boolean {

@@ -1,13 +1,13 @@
 {
   "name": "@fingerprintsoft/angular-spring-hal",
-  "version": "8.0.1",
+  "version": "8.0.2",
   "description": "This Angular module offers a HAL/JSON http-client to easily interact with a Spring Data Rest API or any API that implements the Spring Data Rest resource model",
   "author": "Masvis S.r.l.",
   "readme": "README.md",
   "license": "MIT",
-  "main": "./dist/index.js",
-  "module": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "index.js",
+  "module": "index.js",
+  "typings": "index.d.ts",
   "scripts": {
     "clean": "node ./scripts/deleteDist",
     "build": "npm run tsc",
@@ -23,7 +23,8 @@
     "Angular 4",
     "Angular 5",
     "Angular 6",
-    "Angular"
+    "Angular 7",
+    "Angular 8"
   ],
   "issues": {
     "url": "https://github.com/fingerprints/angular-spring-hal/issues"
@@ -64,7 +65,8 @@
     "@angular/platform-browser": "~8.2.14",
     "@angular/platform-browser-dynamic": "~8.2.14",
     "rxjs": "~6.3.3",
-    "zone.js": "~0.8.26"
+    "zone.js": "~0.8.26",
+    "hash.js": "1.1.7"
   },
   "engines": {
     "node": ">=4"
